@@ -32,7 +32,11 @@ async function startApplication() {
 app.use(express.json());
 
 app.get("/api/status", (req, res) => {
-  return res.status(200).json(getOkResponse());
+  return res.status(200).json({
+    service: "Auth-API",
+    status: "up",
+    httpStatus: 200
+  });
 });
 
 app.use(checkToken);

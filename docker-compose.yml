@@ -1,10 +1,48 @@
-version: "3"
+version: "3"  
+
+volumes:
+  auth-db-vl:
+    name: auth-db-vl
+    driver: local
+    driver_opts:
+      type: none
+      device: /data/docker/auth-db-vl
+      o: bind
+
+  product-db-vl:
+    name: product-db-vl
+    driver: local
+    driver_opts:
+      type: none
+      device: /data/docker/product-db-vl
+      o: bind
+
+  sales-db-vl:
+    name: sales-db-vl
+    driver: local
+    driver_opts:
+      type: none
+      device: /data/docker/sales-db-vl
+      o: bind
+
+  sales-configdb-vl:
+    name: sales-configdb-vl
+    driver: local
+    driver_opts:
+      type: none
+      device: /data/docker/sales-configdb-vl
+      o: bind
+
 services:
 
   auth-db:
     image: postgres:11
     container_name: auth-db
     restart: always
+    networks:
+      - sales-network
+    volumes:
+      - auth-db-vl:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=auth-db
       - POSTGRES_USER=admin
@@ -16,6 +54,10 @@ services:
     image: postgres:11
     container_name: product-db
     restart: always
+    networks:
+      - sales-network
+    volumes:
+      - product-db-vl:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=product-db
       - POSTGRES_USER=admin
@@ -27,43 +69,97 @@ services:
     image: mongo
     container_name: sales-db
     restart: always
+    networks:
+      - sales-network
+    volumes:
+      - sales-db-vl:/data/db
+      - sales-configdb-vl:/data/configdb
     environment:
-      - MONGO_INITDB_DATABASE=sales-db
+      - MONGO_INITDB_DATABASE=sales
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=1234
     ports:
       - 27017:27017
       - 28017:28017
 
+  sales-rabbit:
+    image: rabbitmq:3-management
+    container_name: sales-rabbit
+    hostname: sales-rabbit
+    networks:
+      - sales-network
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAUTL_PASS=guest
+    ports:
+      - 5672:5672
+      - 25676:25676
+      - 15672:15672
+
   auth-api:
     build: './auth-api'
     container_name: auth-api
+    depends_on:
+      - auth-db
+    networks:
+      - sales-network
     environment:
       - PORT=8080
+      - API_SECRET=YXV0aC1hcGktc2VjcmV0LWNvbnRhaW5lci0xMjM0NTY=
+      - DB_HOST=auth-db
+      - DB_NAME=auth-db
+      - DB_USER=admin
+      - DB_PASSWORD=1234
+      - DB_PORT=5432
+      - NODE_ENV=container
     ports:
       - 8080:8080
 
   product-api:
     build: './product-api'
     container_name: product-api
+    depends_on:
+      - product-db
+      - sales-rabbit
+    networks:
+      - sales-network
     environment:
       - PORT=8081
+      - API_SECRET=YXV0aC1hcGktc2VjcmV0LWNvbnRhaW5lci0xMjM0NTY=
+      - DB_HOST=product-db
+      - DB_NAME=product-db
+      - DB_USER=admin
+      - DB_PASSWORD=1234
+      - DB_PORT=5432
+      - RABBIT_MQ_HOST=sales-rabbit
+      - RABBIT_MQ_PORT:5672
+      - RABBIT_MQ_USERNAME:guest
+      - RABBIT_MQ_PASSWORD:guest
+      - SALES_HOST=localhost
+      - SALES_PORT=8082
     ports:
       - 8081:8081
 
   sales-api:
     build: './sales-api'
     container_name: sales-api
+    depends_on:
+      - sales-db
+      - sales-rabbit
+    networks:
+      - sales-network
     environment:
       - PORT=8082
+      - API_SECRET=YXV0aC1hcGktc2VjcmV0LWNvbnRhaW5lci0xMjM0NTY=
+      - MONGO_USER=admin
+      - MONGO_PASS=1234
+      - MONGO_DB_URL=mongodb://sales-db:27017/sales
+      - RABBIT_MQ_URL=amqp://sales-rabbit:5672
+      - PRODUCT_API_URL=http://product-api:8081/api/product
+      - NODE_ENV=container
     ports:
       - 8082:8082
 
-  sales_rabbit:
-    image: rabbitmq:3-management
-    container_name: sales_rabbit
-    ports:
-      - 5672:5672
-      - 25676:25676
-      - 15672:15672
-
+networks:
+  sales-network:
+    driver: bridge
