@@ -17,7 +17,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) {
-        if (isOptions(request)){
+        if (isOptions(request) || isPublic(request)){
             return true;
         }
 
@@ -28,5 +28,9 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     private boolean isOptions(HttpServletRequest request) {
         return HttpMethod.OPTIONS.name().equals(request.getMethod());
+    }
+
+    private boolean isPublic(HttpServletRequest request){
+        return request.getRequestURI().equals("/api/status");
     }
 }

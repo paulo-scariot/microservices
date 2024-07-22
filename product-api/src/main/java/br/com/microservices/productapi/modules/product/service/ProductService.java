@@ -17,8 +17,6 @@ import br.com.microservices.productapi.modules.sale.enums.SaleStatus;
 import br.com.microservices.productapi.modules.sale.rabbitmq.SaleConfirmationSender;
 import br.com.microservices.productapi.modules.supplier.service.SupplierService;
 import lombok.AllArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -221,7 +219,7 @@ public class ProductService {
                     .orElseThrow(() -> new ValidationException("The sales was not found by this product"));
             return SalesByProductResponse.of(product, sales.getSalesIds());
         } catch (Exception e) {
-            throw new ValidationException("Erro trying to get the product's sales");
+            throw new ValidationException("Error trying to get the product's sales");
         }
     }
 
