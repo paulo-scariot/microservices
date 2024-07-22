@@ -3,18 +3,23 @@ package br.com.microservices.productapi.modules.product.service;
 import br.com.microservices.productapi.config.exception.ValidationException;
 import br.com.microservices.productapi.config.messages.SuccessResponse;
 import br.com.microservices.productapi.modules.category.service.CategoryService;
-import br.com.microservices.productapi.modules.product.dto.*;
+import br.com.microservices.productapi.modules.product.dto.ProductCheckStockRequest;
+import br.com.microservices.productapi.modules.product.dto.ProductRequest;
+import br.com.microservices.productapi.modules.product.dto.ProductResponse;
 import br.com.microservices.productapi.modules.product.model.Product;
 import br.com.microservices.productapi.modules.product.repository.ProductRepository;
 import br.com.microservices.productapi.modules.sale.client.SaleClient;
-import br.com.microservices.productapi.modules.sale.dto.SaleConfirmation;
 import br.com.microservices.productapi.modules.sale.dto.Sale;
-import br.com.microservices.productapi.modules.sale.dto.SalesByProductResponse;
+import br.com.microservices.productapi.modules.sale.dto.SaleConfirmation;
 import br.com.microservices.productapi.modules.sale.dto.SaleProduct;
+import br.com.microservices.productapi.modules.sale.dto.SalesByProductResponse;
 import br.com.microservices.productapi.modules.sale.enums.SaleStatus;
 import br.com.microservices.productapi.modules.sale.rabbitmq.SaleConfirmationSender;
 import br.com.microservices.productapi.modules.supplier.service.SupplierService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,24 +30,20 @@ import java.util.List;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
 @Service
+@AllArgsConstructor(onConstructor_ = { @Lazy})
 public class ProductService {
 
     private final static Integer ZERO = 0;
 
-    @Autowired
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
 
-    @Autowired
-    private SupplierService supplierService;
+    private final SupplierService supplierService;
 
-    @Autowired
-    private CategoryService categoryService;
+    private final CategoryService categoryService;
 
-    @Autowired
-    private SaleConfirmationSender saleConfirmationSender;
+    private final SaleConfirmationSender saleConfirmationSender;
 
-    @Autowired
-    private SaleClient saleClient;
+    private final SaleClient saleClient;
 
     public Product findById(Integer id) {
         return productRepository

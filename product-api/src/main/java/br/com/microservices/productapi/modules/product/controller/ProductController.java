@@ -4,19 +4,19 @@ import br.com.microservices.productapi.config.messages.SuccessResponse;
 import br.com.microservices.productapi.modules.product.dto.ProductCheckStockRequest;
 import br.com.microservices.productapi.modules.product.dto.ProductRequest;
 import br.com.microservices.productapi.modules.product.dto.ProductResponse;
-import br.com.microservices.productapi.modules.sale.dto.SalesByProductResponse;
 import br.com.microservices.productapi.modules.product.service.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
+import br.com.microservices.productapi.modules.sale.dto.SalesByProductResponse;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/product")
+@AllArgsConstructor
 public class ProductController {
 
-    @Autowired
-    private ProductService productService;
+    private final ProductService productService;
 
     @PostMapping
     public ProductResponse save(@RequestBody ProductRequest request) {

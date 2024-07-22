@@ -7,7 +7,7 @@ import br.com.microservices.productapi.modules.supplier.dto.SupplierRequest;
 import br.com.microservices.productapi.modules.supplier.dto.SupplierResponse;
 import br.com.microservices.productapi.modules.supplier.model.Supplier;
 import br.com.microservices.productapi.modules.supplier.repository.SupplierRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,20 +17,13 @@ import java.util.List;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
 @Service
+@AllArgsConstructor(onConstructor_ = { @Lazy })
 public class SupplierService {
 
-    @Autowired
-    private SupplierRepository supplierRepository;
+    private final SupplierRepository supplierRepository;
 
-//    @Autowired
-//    private ProductService productService;
-
+    @Lazy
     private final ProductService productService;
-
-    @Autowired
-    public SupplierService(@Lazy final ProductService productService) {
-        this.productService = productService;
-    }
 
     private void validateSupplierName(SupplierRequest request) {
         if (isEmpty(request.getName())){

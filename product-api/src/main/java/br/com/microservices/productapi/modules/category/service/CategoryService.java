@@ -7,7 +7,7 @@ import br.com.microservices.productapi.modules.category.dto.CategoryResponse;
 import br.com.microservices.productapi.modules.category.model.Category;
 import br.com.microservices.productapi.modules.category.repository.CategoryRepository;
 import br.com.microservices.productapi.modules.product.service.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,20 +17,13 @@ import java.util.List;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
 @Service
+@AllArgsConstructor(onConstructor_ = { @Lazy })
 public class CategoryService {
 
-    @Autowired
-    private CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
 
-//    @Autowired
-//    private ProductService productService;
-
+    @Lazy
     private final ProductService productService;
-
-    @Autowired
-    public CategoryService(@Lazy final ProductService productService) {
-        this.productService = productService;
-    }
 
     private void validateCategoryName(CategoryRequest request) {
         if (isEmpty(request.getDescription())){

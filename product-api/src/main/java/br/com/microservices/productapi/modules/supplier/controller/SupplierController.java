@@ -4,17 +4,17 @@ import br.com.microservices.productapi.config.messages.SuccessResponse;
 import br.com.microservices.productapi.modules.supplier.dto.SupplierRequest;
 import br.com.microservices.productapi.modules.supplier.dto.SupplierResponse;
 import br.com.microservices.productapi.modules.supplier.service.SupplierService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/supplier")
+@AllArgsConstructor
 public class SupplierController {
 
-    @Autowired
-    private SupplierService supplierService;
+    private final SupplierService supplierService;
 
     @PostMapping
     public SupplierResponse save(@RequestBody SupplierRequest request) {
