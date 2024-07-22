@@ -5,14 +5,13 @@ import userRoutes from "./scr/modules/user/routes/UserRoutes.js";
 const app = express();
 const env = process.env;
 const PORT = env.PORT || 8080;
-const CONTAINER_ENV = "container";
 
 startApplication();
 
 function startApplication() {
-  if (env.NODE_ENV !== CONTAINER_ENV) {
+  setTimeout(() => {
     db.createInicialData();
-  }
+  }, 10000);
 }
 
 app.use(express.json());

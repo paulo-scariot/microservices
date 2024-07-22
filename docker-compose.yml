@@ -1,37 +1,37 @@
 version: "3"  
 
-volumes:
-  auth-db-vl:
-    name: auth-db-vl
-    driver: local
-    driver_opts:
-      type: none
-      device: /data/docker/auth-db-vl
-      o: bind
-
-  product-db-vl:
-    name: product-db-vl
-    driver: local
-    driver_opts:
-      type: none
-      device: /data/docker/product-db-vl
-      o: bind
-
-  sales-db-vl:
-    name: sales-db-vl
-    driver: local
-    driver_opts:
-      type: none
-      device: /data/docker/sales-db-vl
-      o: bind
-
-  sales-configdb-vl:
-    name: sales-configdb-vl
-    driver: local
-    driver_opts:
-      type: none
-      device: /data/docker/sales-configdb-vl
-      o: bind
+#volumes:
+#  auth-db-vl:
+#    name: auth-db-vl
+#    driver: local
+#    driver_opts:
+#      type: none
+#      device: /data/docker/auth-db-vl
+#      o: bind
+#
+#  product-db-vl:
+#    name: product-db-vl
+#    driver: local
+#    driver_opts:
+#      type: none
+#      device: /data/docker/product-db-vl
+#      o: bind
+#
+#  sales-db-vl:
+#    name: sales-db-vl
+#    driver: local
+#    driver_opts:
+#      type: none
+#      device: /data/docker/sales-db-vl
+#      o: bind
+#
+#  sales-configdb-vl:
+#    name: sales-configdb-vl
+#    driver: local
+#    driver_opts:
+#      type: none
+#      device: /data/docker/sales-configdb-vl
+#      o: bind
 
 services:
 
@@ -41,8 +41,8 @@ services:
     restart: always
     networks:
       - sales-network
-    volumes:
-      - auth-db-vl:/var/lib/postgresql/data
+#    volumes:
+#      - auth-db-vl:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=auth-db
       - POSTGRES_USER=admin
@@ -56,8 +56,8 @@ services:
     restart: always
     networks:
       - sales-network
-    volumes:
-      - product-db-vl:/var/lib/postgresql/data
+#    volumes:
+#      - product-db-vl:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=product-db
       - POSTGRES_USER=admin
@@ -71,9 +71,9 @@ services:
     restart: always
     networks:
       - sales-network
-    volumes:
-      - sales-db-vl:/data/db
-      - sales-configdb-vl:/data/configdb
+#    volumes:
+#      - sales-db-vl:/data/db
+#      - sales-configdb-vl:/data/configdb
     environment:
       - MONGO_INITDB_DATABASE=sales
       - MONGO_INITDB_ROOT_USERNAME=admin

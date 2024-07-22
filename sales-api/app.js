@@ -10,30 +10,22 @@ import saleRoutes from "./src/modules/sale/routes/SaleRoutes.js";
 const app = express();
 const env = process.env;
 const PORT = env.PORT || 8082;
-const CONTAINER_ENV = "container";
-const THREE_MINUTES = 180000;
 
 startApplication();
 
 async function startApplication() {
-  if (CONTAINER_ENV === env.NODE_ENV) {
-    console.info("Waiting for RabbitMQ and MongoDB containers to start...");
-    setInterval(() => {
-      connectMongoDb();
-      connectRabbitMq();
-    }, THREE_MINUTES);
-  } else {
+  setTimeout(() => {
     connectMongoDb();
     createInitialData();
     connectRabbitMq();
-  }
+  }, 20000);
 }
 
 app.use(express.json());
 
 app.get("/api/status", (req, res) => {
   return res.status(200).json({
-    service: "Auth-API",
+    service: "Sales-API",
     status: "up",
     httpStatus: 200
   });

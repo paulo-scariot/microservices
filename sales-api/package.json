@@ -5,8 +5,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "startDev": "nodemon app.js",
-    "startContainer": "export NODE_ENV=container || set NODE_ENV=container&& nodemon app.js"
+    "startDev": "nodemon app.js"
   },
   "dependencies": {
     "amqplib": "^0.10.4",

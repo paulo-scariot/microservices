@@ -33,6 +33,7 @@ spring:
       mode: always
       continue-on-error: true
       platform: postgresql
+      schema-locations: classpath:import.sql
 
   rabbitmq:
     host: ${RABBIT_MQ_HOST:localhost}
