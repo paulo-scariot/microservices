@@ -30,3 +30,10 @@ O fluxo está descrito abaixo:
 * 10 - **Falha na Atualização de Estoque**: Se houver algum problema na atualização, a API de produtos publica uma mensagem na fila de confirmação de vendas com status "REJECTED".
 * 11 - **Atualização do Pedido**: A API de pedidos recebe a mensagem de confirmação e atualiza o status do pedido com base na mensagem recebida.
 
+### Collection do Postman
+
+[microservice.postman_collection.json](microservice.postman_collection.json)
+
+### Rodar o projeto
+
+Para rodar o projeto basta utilizar o comando ```docker-compose up --build```
